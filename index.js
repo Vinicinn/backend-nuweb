@@ -1,5 +1,6 @@
 const { time } = require('console')
 const { json } = require('express')
+//const axios = require('axios')
 const express = require('express')
 const cors = require('cors')
 const fs = require('fs')
@@ -11,7 +12,7 @@ app.get('/', (req, res) => {
     const { name } = req.query
     let data = readFile()
     let arr = JSON.parse(data)
-    if (name) {
+    if (name && name != "") {
         const newArr = arr.filter(({ name: nameRequest }) => nameRequest.includes(name.toLowerCase()))
         return res.json(recoveryTime(newArr))
     }
@@ -22,12 +23,8 @@ app.get('/', (req, res) => {
 })
 
 app.post('/', (req, res) => {
-    console.log("TachegandoNoPost")
-    //const { name, author, time, img } = req.body
-    //console.log(req.headers)
-    console.log(req.body)
-    return res.status(200)
-    /*let data = readFile()
+    const { name, author, time, img } = req.body
+    data = readFile()
     let arr = JSON.parse(data)
     if (name, author, time) {
         if (img == "") {
@@ -44,26 +41,25 @@ app.post('/', (req, res) => {
     }
     else {
         return res.json("Campos Obrigatorios!")
-    }*/
+    }
 })
 app.delete('/', (req, res) => {
-    const { name } = req.body
+    const { name } = req.query
     let data = readFile()
-    let arr = JSON.parse(data)
-    let teste;
-    if (name) {
-        for (let index = 0; index < arr.length; index++) {
-            if (arr[index].name === name) {
-                teste = index;
-            }
-            else if (index == arr.length - 1) {
-                return res.json("Song not Found!")
+    let jsondata = JSON.parse(data)
+    let mscindex;
+    if (name && name != "") {
+        for (let index = 0; index < jsondata.length; index++) {
+            console.log(index)
+            if (jsondata[index]["name"] == name) {
+                console.log('igual')
+                mscindex = index
+            } else {
+                console.log('diferente')
             }
         }
-        arr.splice(teste, 1);
-        writeFile(arr)
-        return res.json("Song Successfully Removed!")
-
+        jsondata.splice(mscindex, 1)
+        writeFile(jsondata)
     }
 })
 
